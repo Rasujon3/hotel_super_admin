@@ -17,12 +17,11 @@ use App\Http\Controllers\DashboardController;
 */
 
 Route::get('/', [IndexController::class, 'loginPage']);
-
-Route::get('/admin/login', [IndexController::class, 'loginPage'])->name('login-admin');
-
-Route::post('admin-login', [AccessController::class, 'adminLogin']);
+Route::post('store-api-token', [AccessController::class, 'storeApiToken']);
 
 Route::get('/logout', [AccessController::class, 'Logout']);
+
+Route::get('/dashboard', [DashboardController::class, 'Dashboard'])->name('dashboard');
 
 Route::get('/clear-cache', function () {
     Artisan::call('cache:clear');
@@ -31,9 +30,4 @@ Route::get('/clear-cache', function () {
     Artisan::call('view:clear');
 
     return 'All caches (config, route, view, application) have been cleared!';
-});
-
-Route::group(['middleware' => ['prevent-back-history', 'admin_auth']], function () {
-    // admin dashboard
-    Route::get('/dashboard', [DashboardController::class, 'Dashboard']);
 });

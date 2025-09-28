@@ -2,28 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Log;
+
 class DashboardController extends Controller
-{   
-     public function __construct()
-    {
-        $this->middleware('auth_check');
-    }
+{
     public function Dashboard()
     {
-    	try
-    	{
-    		return view('layouts.app');
-    	}catch(Exception $e){
-                  
-                $message = $e->getMessage();
-      
-                $code = $e->getCode();       
-      
-                $string = $e->__toString();       
-                return response()->json(['message'=>$message, 'execption_code'=>$code, 'execption_string'=>$string]);
-                exit;
+    	try {
+    	    return view('layouts.app');
+    	} catch(Exception $e) {
+            // Log the error
+             Log::error('Error in Dashboard: ', [
+                 'message' => $e->getMessage(),
+                 'code' => $e->getCode(),
+                 'line' => $e->getLine(),
+                 'trace' => $e->getTraceAsString()
+             ]);
+            return redirect()->route('login-admin');
         }
     }
 }

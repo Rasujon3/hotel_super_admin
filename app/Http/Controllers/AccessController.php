@@ -71,4 +71,23 @@ class AccessController extends Controller
             return Redirect()->back()->with($notification);
         }
     }
+
+    public function storeApiToken(Request $request)
+    {
+        try {
+            $request->session()->put('api_token', $request->token);
+            $request->session()->put('user', $request->user);
+
+            return response()->json(['success' => true]);
+        } catch (Exception $e) {
+            Log::error('Error in storeApiToken: ', [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json(['success' => false, 'message' => 'Something went wrong!!!'], 500);
+        }
+    }
 }

@@ -3,7 +3,7 @@
     <!-- Brand Logo -->
     <a href="{{URL::to('/dashboard')}}" class="brand-link">
         <img src="{{asset('back/dist/img/AdminLTELogo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Earning App</span>
+        <span class="brand-text font-weight-light">Hotel Management</span>
     </a>
 
     <!-- Sidebar -->
@@ -14,7 +14,7 @@
                 <img src="{{asset('back/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="/" class="d-block">{{ Auth::user()->name ?? '' }}</a>
+                <a href="/dashboard" class="d-block">{{ Session::get('user')['full_name'] ?? '' }}</a>
             </div>
         </div>
 
@@ -40,7 +40,6 @@
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
-
                         </p>
                     </a>
 
@@ -56,13 +55,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('products.create') }}" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Add Product</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('products.index') }}" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>All Product</p>
                             </a>
@@ -80,13 +79,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('packages.create') }}" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Add Package</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('packages.index') }}" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>All Package</p>
                             </a>
@@ -95,7 +94,7 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('settings') }}" class="nav-link">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon far fa-image"></i>
                         <p>
                             Settings
@@ -112,13 +111,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('frozen-amounts.create') }}" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Add Frozen Amount</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('frozen-amounts.index') }}" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>All Frozen Amount</p>
                             </a>
@@ -136,13 +135,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('events.create') }}" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Add Event</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('events.index') }}" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>All Event</p>
                             </a>
@@ -151,7 +150,7 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('levels.index') }}" class="nav-link">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Level
@@ -160,13 +159,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('levels.create') }}" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Add Level</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('levels.index') }}" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>All Level</p>
                             </a>
@@ -175,7 +174,7 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('about-us') }}" class="nav-link">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon far fa-image"></i>
                         <p>
                             About Us
