@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class AccessController extends Controller
@@ -48,27 +49,33 @@ class AccessController extends Controller
         }
     }
 
-    public function Logout()
+    public function logout(Request $request)
     {
-    	try
-    	{
-            $redirectUrl = Auth::user()->role === 'user' ? '/user/login' : '/admin/login';
-    		Auth::logout();
-    		return redirect($redirectUrl);
-    	} catch(Exception $e) {
-            // Log the error
-            Log::error('Error in Logout: ', [
+        try {
+            $token = $request->session()->get('api_token');
+
+            if ($token) {
+                // Call your API logout
+                $apiBaseUrl = config('app.api_base_url');
+                $response = Http::withToken($token)->post($apiBaseUrl . 'api/v1/logout');
+            }
+
+            // Clear session
+            $request->session()->forget(['api_token', 'user']);
+            $request->session()->flush();
+
+            return redirect()->route('login-admin')->with('message', 'Logged out successfully.');
+        } catch (Exception $e) {
+            Log::error('Error during logout: ', [
                 'message' => $e->getMessage(),
-                'code' => $e->getCode(),
                 'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
             ]);
 
-            $notification=array(
-                'message' => 'Something went wrong!!!',
-                'alert-type' => 'error'
-            );
-            return Redirect()->back()->with($notification);
+            // Always clear session to be safe
+            $request->session()->forget(['api_token', 'user']);
+            $request->session()->flush();
+
+            return redirect()->route('login-admin')->with('message', 'Logout failed, but you are logged out locally.');
         }
     }
 

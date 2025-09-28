@@ -16,12 +16,12 @@ use App\Http\Controllers\DashboardController;
 |
 */
 
-Route::get('/', [IndexController::class, 'loginPage']);
+Route::get('/', [IndexController::class, 'loginPage'])->name('login-admin');
 Route::post('store-api-token', [AccessController::class, 'storeApiToken']);
 
-Route::get('/logout', [AccessController::class, 'Logout']);
+Route::get('/logout', [AccessController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', [DashboardController::class, 'Dashboard'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
 Route::get('/clear-cache', function () {
     Artisan::call('cache:clear');

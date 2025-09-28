@@ -12,7 +12,7 @@
     <ul class="navbar-nav ml-auto">
         <!-- Navbar Search -->
         <li class="nav-item">
-            <a href="{{url('/logout')}}" class="btn btn-primary font-weight-bold">LOGOUT</a>
+            <a href="{{ route('logout') }}" class="btn btn-primary font-weight-bold">LOGOUT</a>
         </li>
     </ul>
 </nav>

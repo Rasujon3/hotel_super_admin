@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
-    public function Dashboard()
+    public function dashboard()
     {
     	try {
     	    return view('layouts.app');
