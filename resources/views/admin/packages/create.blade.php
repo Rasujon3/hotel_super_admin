@@ -26,60 +26,79 @@
             <div class="card-header">
                 <h3 class="card-title">Add Package</h3>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form action="{{route('packages.store')}}" method="POST" enctype="multipart/form-data">
+
+            <form id="package-form">
                 @csrf
                 <div class="card-body">
                     <div class="row">
+
+                        <!--
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="title">Title <span class="required">*</span></label>
-                                <input type="text" name="title" class="form-control" id="title"
-                                    placeholder="Title" required="" value="{{old('title')}}">
-                                @error('title')
-                                    <span class="alert alert-danger">{{ $message }}</span>
-                                @enderror
+                                <label for="name">Package Name <span class="required">*</span></label>
+                                <input type="text" name="name" class="form-control" id="name" placeholder="Package Name" required>
+                                <span class="text-danger" id="name_error"></span>
+                            </div>
+                        </div>
+                        -->
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">Hotel Type <span class="required">*</span></label>
+                                <select name="name" id="name" class="form-control" required>
+                                    <option value="">--Select--</option>
+                                    <option value="3 Star Hotel">3 Star Hotel</option>
+                                    <option value="4 Star Hotel">4 Star Hotel</option>
+                                    <option value="5 Star Hotel">5 Star Hotel</option>
+                                </select>
+                                <span class="text-danger" id="name_error"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="recharge_amount">Recharge Amount (BDT) <span class="required">*</span></label>
-                                <input type="text" name="recharge_amount" class="form-control numericInput" id="recharge_amount"
-                                    placeholder="Recharge Amount" required="" value="{{old('recharge_amount')}}">
-                                @error('recharge_amount')
-                                    <span class="alert alert-danger">{{ $message }}</span>
-                                @enderror
+                                <label for="duration">Duration <span class="required">*</span></label>
+                                <select name="duration" id="duration" class="form-control" required>
+                                    <option value="">--Select--</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                                <span class="text-danger" id="duration_error"></span>
                             </div>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="description">Description <span class="required">*</span></label>
-                                <textarea class="form-control description" required="" name="description">{!!old('description')!!}</textarea>
-                                @error('description')
-                                    <span class="alert alert-danger">{{ $message }}</span>
-                                @enderror
+                                <label for="price">Price <span class="required">*</span></label>
+                                <input
+                                    type="text"
+                                    name="price"
+                                    class="form-control numericInput"
+                                    id="price"
+                                    placeholder="Price"
+                                    required
+                                >
+                                <span class="text-danger" id="price_error"></span>
                             </div>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="bonus_amount">Bonus Amount (BDT) <span class="required">*</span></label>
-                                <input type="text" name="bonus_amount" class="form-control numericInput" id="bonus_amount"
-                                    placeholder="Bonus Amount" required="" value="{{old('bonus_amount')}}">
-                                @error('bonus_amount')
-                                    <span class="alert alert-danger">{{ $message }}</span>
-                                @enderror
+                                <label for="status">Status <span class="required">*</span></label>
+                                <select name="status" id="status" class="form-control" required>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                                <span class="text-danger" id="status_error"></span>
                             </div>
                         </div>
 
-                        <div class="form-group w-100 px-2">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
                     </div>
-                    <!-- /.card-body -->
+
+                    <div class="form-group w-100 px-2">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+
                 </div>
             </form>
         </div>
@@ -93,7 +112,55 @@
   <script src="{{asset('custom/multiple_files.js')}}"></script>
 
   <script>
+      $(document).ready(function() {
+          let token = "{{ session('api_token') }}";
+          let apiBaseUrl = '{{ config("app.api_base_url") }}';
 
+          $('#package-form').on('submit', function(e) {
+              e.preventDefault();
+
+              // clear errors
+              $('#name_error, #duration_error, #price_error, #status_error').text('');
+
+              let formData = {
+                  name: $('#name').val(),
+                  duration: $('#duration').val(),
+                  price: $('#price').val(),
+                  status: $('#status').val()
+              };
+
+              $.ajax({
+                  url: apiBaseUrl + 'api/v1/packages/create',
+                  type: 'POST',
+                  contentType: 'application/json',
+                  data: JSON.stringify(formData),
+                  beforeSend: function(xhr) {
+                      xhr.setRequestHeader("Authorization", "Bearer " + token);
+                  },
+                  success: function(resp) {
+                      if(resp.success) {
+                          toastr.success(resp.message || 'Package created successfully');
+                          setTimeout(() => {
+                              window.location.href = "{{ route('packages.index') }}";
+                          }, 1500);
+                      } else {
+                          toastr.error(resp.message || 'Something went wrong');
+                      }
+                  },
+                  error: function(xhr) {
+                      if(xhr.status === 422) {
+                          let errors = xhr.responseJSON.errors;
+                          if(errors.name) $('#name_error').text(errors.name[0]);
+                          if(errors.duration) $('#duration_error').text(errors.duration[0]);
+                          if(errors.price) $('#price_error').text(errors.price[0]);
+                          if(errors.status) $('#status_error').text(errors.status[0]);
+                      } else {
+                          toastr.error(xhr.responseJSON?.message || 'Something went wrong');
+                      }
+                  }
+              });
+          });
+      });
   </script>
 
 @endpush

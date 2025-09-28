@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PackageController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
@@ -22,6 +23,8 @@ Route::post('store-api-token', [AccessController::class, 'storeApiToken']);
 Route::get('/logout', [AccessController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+Route::resource('packages', PackageController::class);
 
 Route::get('/clear-cache', function () {
     Artisan::call('cache:clear');

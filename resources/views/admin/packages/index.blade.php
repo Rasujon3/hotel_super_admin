@@ -28,13 +28,13 @@
             <div class="card-body">
                 <a href="{{ route('packages.create') }}" class="btn btn-primary add-new mb-2">Add New Package</a>
                 <div class="fetch-data table-responsive">
-                    <table id="product-table" class="table table-bordered table-striped data-table">
+                    <table id="table" class="table table-bordered table-striped data-table">
                         <thead>
                             <tr>
-                                <th>Title</th>
-                                <th>Recharge Amount</th>
-                                <th>Bonus Amount</th>
-                                <th>Description</th>
+                                <th>Name</th>
+                                <th>Duration</th>
+                                <th>Price</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -49,58 +49,75 @@
 @endsection
 
 @push('scripts')
+    <script>
+        $(document).ready(function(){
+            let token = "{{ session('api_token') }}";
+            let apiBaseUrl = '{{ config("app.api_base_url") }}';
 
-  <script>
-  	$(document).ready(function(){
-  		let product_id;
-  		var productTable = $('#product-table').DataTable({
-		        searching: true,
-		        processing: true,
-		        serverSide: true,
-		        ordering: false,
-		        responsive: true,
-		        stateSave: true,
-		        ajax: {
-		          url: "{{ url('/packages') }}",
-		        },
-
-		        columns: [
-		            {data: 'title', name: 'title'},
-                    {data: 'recharge_amount', name: 'recharge_amount'},
-                    {data: 'bonus_amount', name: 'bonus_amount'},
-		            {data: 'description', name: 'description'},
-		            {data: 'action', name: 'action', orderable: false, searchable: false},
-		        ]
-        });
-
-       $(document).on('click', '.delete-package', function(e){
-
-           e.preventDefault();
-
-           product_id = $(this).data('id');
-
-           if(confirm('Do you want to delete this?'))
-           {
-               $.ajax({
-
-                    url: "{{url('/packages')}}/"+product_id,
-
-                         type:"DELETE",
-                         dataType:"json",
-                         success:function(data) {
-
-                            toastr.success(data.message);
-
-                            $('.data-table').DataTable().ajax.reload(null, false);
-
+            var packageTable = $('#table').DataTable({
+                searching: true,
+                processing: true,
+                serverSide: false,
+                ordering: false,
+                responsive: true,
+                ajax: {
+                    url: apiBaseUrl + 'api/v1/packages/list',
+                    type: "GET",
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
                     },
+                    dataSrc: function (json) {
+                        if(json.success) {
+                            return json.data;
+                        } else {
+                            toastr.error(json.message || 'Failed to load packages.');
+                            return [];
+                        }
+                    }
+                },
+                columns: [
+                    {data: 'name'},
+                    {data: 'duration'},
+                    {data: 'price'},
+                    {data: 'status'},
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            let btns = '';
+                            btns += '<a href="/packages/' + row.id + '/edit" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a> ';
+                            btns += '<button class="btn btn-danger btn-sm delete-data" data-id="'+row.id+'"><i class="fa fa-trash"></i></button>';
+                            return btns;
+                        }
+                    }
+                ]
+            });
 
-              });
-           }
+            // 🔥 delete handler
+            $(document).on('click', '.delete-data', function(e){
+                e.preventDefault();
+                let id = $(this).data('id');
 
-       });
-
-  	});
-  </script>
-
+                if(confirm('Do you want to delete this data?')) {
+                    $.ajax({
+                        url: apiBaseUrl + 'api/v1/packages/delete/' + id,
+                        type: 'DELETE',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        success: function(resp) {
+                            if(resp.success) {
+                                toastr.success(resp.message);
+                                $('#table').DataTable().ajax.reload(null, false);
+                            } else {
+                                toastr.error(resp.message || 'Failed to delete');
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error(xhr.responseJSON?.message || 'Something went wrong');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 @endpush
