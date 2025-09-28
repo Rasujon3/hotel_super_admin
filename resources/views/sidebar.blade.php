@@ -55,7 +55,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('packages.index') }}" class="nav-link {{ request()->routeIs('packages.index') ? 'active_nav_menu' : '' }}">
+                            <a href="{{ route('packages.index') }}" class="nav-link {{ request()->routeIs('packages.*') ? 'active_nav_menu' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Packages</p>
                             </a>
