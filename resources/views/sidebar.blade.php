@@ -45,7 +45,7 @@
 
                 </li>
 
-                <li class="nav-item  {{ Request::is('packages*') ? 'menu-open' : '' }}">
+                <li class="nav-item  {{ (Request::is('packages*') || Request::is('popularPlaces*')) ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
@@ -60,7 +60,14 @@
                                 <p>Packages</p>
                             </a>
                         </li>
-
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('popularPlaces.index') }}" class="nav-link {{ request()->routeIs('popularPlaces.*') ? 'active_nav_menu' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Popular Place</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

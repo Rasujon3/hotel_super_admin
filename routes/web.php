@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\PopularPlaceController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
@@ -25,6 +26,7 @@ Route::get('/logout', [AccessController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
 Route::resource('packages', PackageController::class);
+Route::resource('popularPlaces', PopularPlaceController::class);
 
 Route::get('/clear-cache', function () {
     Artisan::call('cache:clear');
