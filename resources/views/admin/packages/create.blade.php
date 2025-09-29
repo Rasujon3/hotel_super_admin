@@ -61,7 +61,7 @@
                                 <select name="duration" id="duration" class="form-control" required>
                                     <option value="">--Select--</option>
                                     <option value="monthly">Monthly</option>
-                                    <option value="yearly">Yearly</option>
+{{--                                    <option value="yearly">Yearly</option>--}}
                                 </select>
                                 <span class="text-danger" id="duration_error"></span>
                             </div>
@@ -122,6 +122,11 @@
               // clear errors
               $('#name_error, #duration_error, #price_error, #status_error').text('');
 
+              let form = $(this);
+              let submitBtn = form.find('button[type="submit"]');
+
+              submitBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Submitting...');
+
               let formData = {
                   name: $('#name').val(),
                   duration: $('#duration').val(),
@@ -157,6 +162,10 @@
                       } else {
                           toastr.error(xhr.responseJSON?.message || 'Something went wrong');
                       }
+                  },
+                  complete: function() {
+                      // always restore the button
+                      submitBtn.prop('disabled', false).html('Submit');
                   }
               });
           });

@@ -50,7 +50,7 @@
         <span class="text-danger" id="password_error"></span>
 
         <div class="row">
-          <div class="col-8">
+          <div class="col-6">
             <div class="icheck-primary">
               <input type="checkbox" id="remember">
               <label for="remember">
@@ -60,7 +60,7 @@
           </div>
 
           <!-- /.col -->
-          <div class="col-4">
+          <div class="col-6">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
           <!-- /.col -->
@@ -95,6 +95,11 @@ $(document).ready(function() {
         $('#login_error').text('');
         $('#password_error').text('');
         $('#response_error').text('');
+
+        let form = $(this);
+        let submitBtn = form.find('button[type="submit"]');
+
+        submitBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Submitting...');
 
         let login = $('#login').val();
         let password = $('#password').val();
@@ -155,6 +160,10 @@ $(document).ready(function() {
                     $('#response_error').text(xhr?.responseJSON?.message ?? 'Something went wrong, Please try again !!!');
                     toastr.error(xhr?.responseJSON?.message || 'Something went wrong, Please try again !!!');
                 }
+            },
+            complete: function() {
+                // always restore the button
+                submitBtn.prop('disabled', false).html('Submit');
             }
         });
     });
