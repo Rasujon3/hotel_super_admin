@@ -23,12 +23,19 @@ class PropertyType extends Model
         'updated_at',
     ];
 
-    public static function rules()
+    public static function rules($id = null)
     {
-        return [
-            'name' => ['required', 'string', 'max:45', 'unique:property_types,name'],
+        $rules = [
+            'name' => ['required', 'string', 'max:45', 'unique:property_types,name,' . $id],
             'status' => 'required|in:Active,Inactive',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:5120',
         ];
+        if (is_null($id)) {
+            // Rule for create (if $id is null)
+            $rules['image'] = 'required|image|mimes:jpg,jpeg,png|max:5120';
+        } else {
+            // Rule for update (if $id is not null)
+            $rules['image'] = 'nullable|image|mimes:jpg,jpeg,png|max:5120';
+        }
+        return $rules;
     }
 }

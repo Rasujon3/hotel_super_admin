@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PropertyTypeRequest;
 use App\Models\PropertyType;
+use App\Services\S3Service;
 use Exception;
 use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PropertyTypeController extends Controller
 {
@@ -25,6 +28,10 @@ class PropertyTypeController extends Controller
                         return $row->name;
                     })
 
+                    ->addColumn('status', function($row){
+                        return $row->status;
+                    })
+
                     ->addColumn('image_url', function($row){
                         $url = asset($row->image_url);
                         return '<img src="' . $url . '" alt="PropertyType Image" style="height:60px;">';
@@ -40,11 +47,11 @@ class PropertyTypeController extends Controller
                         $btn .= '&nbsp;';
 
 
-                        $btn .= ' <a href="#" class="btn btn-danger btn-sm delete-event action-button" data-id="'.$row->id.'"><i class="fa fa-trash"></i></a>';
+                        $btn .= ' <a href="#" class="btn btn-danger btn-sm delete-data action-button" data-id="'.$row->id.'"><i class="fa fa-trash"></i></a>';
 
                         return $btn;
                     })
-                    ->rawColumns(['name','image_url','action'])
+                    ->rawColumns(['name','status','image_url','action'])
                     ->make(true);
             }
 
@@ -62,18 +69,29 @@ class PropertyTypeController extends Controller
         DB::beginTransaction();
         try
         {
-            if($request->hasFile('file')) {
-                $filePath = $this->storeFile($request->file('file'));
-                $path = $filePath ?? '';
+            $image_url = null;
+            $image_path = null;
+
+            if($request->hasFile('image')) {
+                $s3 = app(S3Service::class);
+                $file = $request->file('image');
+                $result = $s3->upload($file, 'propertyType');
+
+                if ($result) {
+                    $image_url = $result['url'];
+                    $image_path = $result['path'];
+                }
             }
 
             $propertyType = new PropertyType();
-            $propertyType->title = $request->title;
-            $propertyType->img = $path;
+            $propertyType->name = $request->name;
+            $propertyType->status = $request->status;
+            $propertyType->image_url = $image_url;
+            $propertyType->image_path = $image_path;
             $propertyType->save();
 
             $notification=array(
-                'message' => 'Successfully a event has been added',
+                'message' => 'Successfully a Property Type has been added',
                 'alert-type' => 'success',
             );
             DB::commit();
@@ -83,7 +101,7 @@ class PropertyTypeController extends Controller
         } catch(Exception $e) {
             DB::rollback();
             // Log the error
-            Log::error('Error in storing event: ', [
+            Log::error('Error in storing Property Type: ', [
                 'message' => $e->getMessage(),
                 'code' => $e->getCode(),
                 'line' => $e->getLine(),
@@ -99,29 +117,41 @@ class PropertyTypeController extends Controller
     }
     public function show(PropertyType $propertyType)
     {
-        return view('admin.propertyTypes.edit', compact('event'));
+        return view('admin.propertyTypes.edit', compact('propertyType'));
     }
-    public function edit(PropertyType $propertyType)
+    public function edit(PropertyTypeRequest $propertyType)
     {
         //
     }
-    public function update(EventRequest $request, PropertyType $propertyType)
+    public function update(PropertyTypeRequest $request, PropertyType $propertyType)
     {
         try
         {
-            // Handle file upload
-            $path = $propertyType->img;
-            if ($request->hasFile('file')) {
-                $filePath = $this->updateFile($request->file('file'), $propertyType);
-                $path = $filePath ?? '';
+            $image_url = $propertyType->image_url;
+            $image_path = $propertyType->image_path;
+
+            if($request->hasFile('image')) {
+                $s3 = app(S3Service::class);
+
+                $s3->delete($propertyType->image_path);
+
+                $file = $request->file('image');
+                $result = $s3->upload($file, 'propertyType');
+
+                if ($result) {
+                    $image_url = $result['url'];
+                    $image_path = $result['path'];
+                }
             }
 
-            $propertyType->title = $request->title;
-            $propertyType->img = $path;
+            $propertyType->name = $request->name;
+            $propertyType->status = $request->status;
+            $propertyType->image_url = $image_url;
+            $propertyType->image_path = $image_path;
             $propertyType->save();
 
             $notification=array(
-                'message'=>'Successfully the event has been updated',
+                'message'=>'Successfully the Property Type has been updated',
                 'alert-type'=>'success',
             );
 
@@ -129,7 +159,7 @@ class PropertyTypeController extends Controller
 
         } catch(Exception $e) {
             // Log the error
-            Log::error('Error in updating event: ', [
+            Log::error('Error in updating Property Type: ', [
                 'message' => $e->getMessage(),
                 'code' => $e->getCode(),
                 'line' => $e->getLine(),
@@ -147,14 +177,15 @@ class PropertyTypeController extends Controller
     {
         try
         {
-            // Delete the old file if it exists
-            $this->deleteOldFile($propertyType);
+            $s3 = app(S3Service::class);
+            $s3->delete($propertyType->image_path);
+
             $propertyType->delete();
-            return response()->json(['status'=>true, 'message'=>'Successfully the event has been deleted']);
+            return response()->json(['status'=>true, 'message'=>'Successfully the Property Type has been deleted']);
         } catch(Exception $e) {
             DB::rollback();
             // Log the error
-            Log::error('Error in deleting event: ', [
+            Log::error('Error in deleting Property Type: ', [
                 'message' => $e->getMessage(),
                 'code' => $e->getCode(),
                 'line' => $e->getLine(),

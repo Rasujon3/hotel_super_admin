@@ -6,14 +6,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Edit Event</h1>
+                    <h1 class="m-0">Edit Property Type</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{URL::to('/dashboard')}}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{URL::to('/events')}}">All Event
-                                </a></li>
-                        <li class="breadcrumb-item active">Edit Event</li>
+                        <li class="breadcrumb-item"><a href="{{URL::to('/propertyType')}}">All Property Type</a></li>
+                        <li class="breadcrumb-item active">Edit Property Type</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -24,57 +23,65 @@
     <section class="content">
         <div class="card card-success">
             <div class="card-header">
-                <h3 class="card-title">Edit Event</h3>
+                <h3 class="card-title">Edit Property Type</h3>
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form action="{{ route('events.update',$event->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('propertyTypes.update',$propertyType->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="title">Title <span class="required">*</span></label>
-                                <input type="text" name="title" class="form-control" id="title"
-                                    placeholder="Event Name" required="" value="{{old('title',$event->title)}}">
-                                @error('title')
-                                    <span class="alert alert-danger">{{ $message }}</span>
+                                <label for="name">Name <span class="required">*</span></label>
+                                <input type="text" name="name" class="form-control" id="name"
+                                       placeholder="Property Type Name" required="" value="{{old('name',$propertyType->name)}}">
+                                @error('name')
+                                <span class="alert alert-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
-
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Image</label>
-                                        <div class="drop-container">
-                                            <label for="file-input" class="upload-button">Upload Files</label>
-                                            <div class="preview-images" id="preview-container"></div>
-                                            <input type="file" class="form-control" name="file" id="file-input">
-                                        </div>
-                                        @error('file')
-                                            <span class="alert alert-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group pt-5">
-                                        <label for="img" class="mr-4">Image Preview</label>
-                                        <img src="{{ asset($event->img) }}" alt="Event file" style="height:60px;">
-                                    </div>
-                                </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="status">Select Status <span class="required">*</span></label>
+                                <select class="form-control select2bs4" name="status" id="status" required="">
+                                    <option value="" selected="" disabled="">Select Status</option>
+                                    <option value="Active" @if($propertyType->status === 'Active') selected @endif>Active</option>
+                                    <option value="Inactive" @if($propertyType->status === 'Inactive') selected @endif>Inactive</option>
+                                </select>
+                                @error('status')
+                                <span class="alert alert-danger">{{ $message }}</span>
+                                @enderror
                             </div>
-
-                        </div>
-
-                        <div class="form-group w-100 px-2">
-                            <button type="submit" class="btn btn-success">Save Changes</button>
                         </div>
                     </div>
-                    <!-- /.card-body -->
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="image">Image <span class="required">*</span></label>
+                                <input
+                                    name="image"
+                                    type="file"
+                                    id="image"
+                                    accept="image/*"
+                                    class="dropify"
+                                    data-height="150"
+                                    data-default-file="{{ $propertyType->image_url }}"
+                                />
+                                @error('image')
+                                <span class="alert alert-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group w-100 px-2">
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                    </div>
                 </div>
+                <!-- /.card-body -->
             </form>
         </div>
     </section>

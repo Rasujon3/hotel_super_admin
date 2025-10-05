@@ -32,6 +32,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Status</th>
                                 <th>Image</th>
                                 <th>Action</th>
                             </tr>
@@ -50,7 +51,7 @@
 
   <script>
   	$(document).ready(function(){
-  		let product_id;
+  		let id;
   		var productTable = $('#table').DataTable({
 		        searching: true,
 		        processing: true,
@@ -64,21 +65,22 @@
 
 		        columns: [
 		            {data: 'name', name: 'name'},
+		            {data: 'status', name: 'status'},
                     {data: 'image_url', name: 'image_url'},
 		            {data: 'action', name: 'action', orderable: false, searchable: false},
 		        ]
         });
 
-       $(document).on('click', '.delete-event', function(e){
+       $(document).on('click', '.delete-data', function(e){
 
            e.preventDefault();
 
-           product_id = $(this).data('id');
+           id = $(this).data('id');
 
            if(confirm('Do you want to delete this?'))
            {
                $.ajax({
-                    url: "{{ url('/propertyTypes') }}/"+product_id,
+                    url: "{{ url('/propertyTypes') }}/"+id,
                      type:"DELETE",
                      dataType:"json",
                      success:function(data) {
@@ -87,7 +89,6 @@
 
                         $('.data-table').DataTable().ajax.reload(null, false);
                     },
-
               });
            }
 

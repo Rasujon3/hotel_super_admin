@@ -33,7 +33,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="name">Title <span class="required">*</span></label>
+                                <label for="name">Name <span class="required">*</span></label>
                                 <input type="text" name="name" class="form-control" id="name"
                                     placeholder="Property Type Name" required="" value="{{old('name')}}">
                                 @error('name')
@@ -50,7 +50,7 @@
                                     <option value="Inactive">Inactive</option>
                                 </select>
                                 @error('status')
-                                <span class="alert alert-danger">{{ $message }}</span>
+                                    <span class="alert alert-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
@@ -59,27 +59,27 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="company_logo">Company Logo <span class="required">*</span></label>
+                                <label for="image">Image <span class="required">*</span></label>
                                 <input
-                                    name="company_logo"
+                                    name="image"
                                     type="file"
-                                    id="company_logo"
+                                    id="image"
                                     accept="image/*"
                                     class="dropify"
                                     data-height="150"
                                 />
-                                @error('company_logo')
-                                <span class="alert alert-danger">{{ $message }}</span>
+                                @error('image')
+                                    <span class="alert alert-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
                     </div>
 
-                        <div class="form-group w-100 px-2">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
+                    <div class="form-group w-100 px-2">
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
-                    <!-- /.card-body -->
+                </div>
+                <!-- /.card-body -->
             </form>
         </div>
     </section>

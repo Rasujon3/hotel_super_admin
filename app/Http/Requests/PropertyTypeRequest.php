@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\PropertyType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PropertyTypeRequest extends FormRequest
@@ -13,7 +14,7 @@ class PropertyTypeRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +24,7 @@ class PropertyTypeRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $data = $this->route('propertyType') ?: null;
+        return PropertyType::rules($data->id);
     }
 }
