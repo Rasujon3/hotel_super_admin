@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PopularPlaceController;
+use App\Http\Controllers\WithdrawController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
@@ -27,6 +28,7 @@ Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashb
 
 Route::resource('packages', PackageController::class);
 Route::resource('popularPlaces', PopularPlaceController::class);
+Route::resource('withdraws', WithdrawController::class);
 
 Route::get('/clear-cache', function () {
     Artisan::call('cache:clear');
