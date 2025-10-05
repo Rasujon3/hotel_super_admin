@@ -45,7 +45,15 @@
 
                 </li>
 
-                <li class="nav-item  {{ (Request::is('packages*') || Request::is('popularPlaces*') || Request::is('withdraws*')) ? 'menu-open' : '' }}">
+                <li class="nav-item  {{ (
+                        Request::is('packages*') ||
+                        Request::is('popularPlaces*') ||
+                        Request::is('withdraws*') ||
+                        Request::is('propertyTypes*')
+                        )
+                        ? 'menu-open' : ''
+                        }}"
+                >
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
@@ -74,6 +82,14 @@
                             <a href="{{ route('withdraws.index') }}" class="nav-link {{ request()->routeIs('withdraws.*') ? 'active_nav_menu' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Withdraw</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('propertyTypes.index') }}" class="nav-link {{ request()->routeIs('propertyTypes.*') ? 'active_nav_menu' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Property Types</p>
                             </a>
                         </li>
                     </ul>
