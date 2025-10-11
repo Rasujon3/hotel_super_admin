@@ -25,6 +25,6 @@ class PropertyTypeRequest extends FormRequest
     public function rules()
     {
         $data = $this->route('propertyType') ?: null;
-        return PropertyType::rules($data->id);
+        return PropertyType::rules();
     }
 }
