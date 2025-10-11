@@ -93,6 +93,14 @@
                             </a>
                         </li>
                     </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('settings') }}" class="nav-link {{ request()->routeIs('settings') ? 'active_nav_menu' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Settings</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!--
