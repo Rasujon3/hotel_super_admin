@@ -3,6 +3,7 @@
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PopularPlaceController;
 use App\Http\Controllers\PropertyTypeController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\WithdrawController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,10 @@ Route::resource('withdraws', WithdrawController::class);
 
 # web routes
 Route::resource('propertyTypes', PropertyTypeController::class);
+
+// Settings
+Route::get('/settings', [SettingController::class, 'settings'])->name('settings');
+Route::post('settings-app', [SettingController::class, 'settingApp']);
 
 Route::get('/clear-cache', function () {
     Artisan::call('cache:clear');
